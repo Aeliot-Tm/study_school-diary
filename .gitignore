@@ -1,0 +1,4 @@
+.idea
+!.getkeep
+/var/logs/
+/vendor

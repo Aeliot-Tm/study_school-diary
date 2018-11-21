@@ -1,0 +1,36 @@
+{
+    "name": "aeliot-tm/school-diary",
+    "license": "MIT",
+    "type": "project",
+    "description": "Study project",
+    "autoload": {
+        "psr-0": {
+            "": "src/"
+        },
+        "classmap": [
+            "app/AppKernel.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-0": {
+            "\\Test": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.0",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpmd/phpmd": "@stable",
+        "phpunit/phpunit": "@stable",
+        "squizlabs/php_codesniffer": "@stable"
+    },
+    "scripts": {
+        "post-root-package-install": [],
+        "post-install-cmd": [],
+        "post-update-cmd": []
+    }
+}
