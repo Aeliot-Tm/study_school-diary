@@ -8,6 +8,8 @@
 
 namespace Controller;
 
+use Core\DB\Exception\ExecutionException;
+use Core\DB\Exception\NotUniqueException;
 use Core\HTTP\Exception\NotFoundException;
 use Core\HTTP\Request\Request;
 use Core\HTTP\Response\RedirectResponse;
@@ -41,6 +43,7 @@ class UserController
     /**
      * @param Request $request
      * @return Response|RedirectResponse
+     * @throws \Exception
      */
     public function create(Request $request)
     {
@@ -61,6 +64,7 @@ class UserController
      * @param Request $request
      * @param int $id
      * @return RedirectResponse
+     * @throws ExecutionException
      */
     public function delete(Request $request, int $id)
     {
@@ -74,6 +78,9 @@ class UserController
      * @param int $id
      * @return RedirectResponse|Response
      * @throws NotFoundException
+     * @throws ExecutionException
+     * @throws NotUniqueException
+     * @throws \Exception
      */
     public function edit(Request $request, int $id)
     {
@@ -97,6 +104,8 @@ class UserController
     /**
      * @param Request $request
      * @return Response
+     * @throws ExecutionException
+     * @throws \Exception
      */
     public function list(Request $request)
     {
@@ -112,6 +121,9 @@ class UserController
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws ExecutionException
+     * @throws NotUniqueException
+     * @throws \Exception
      */
     public function view(Request $request, int $id)
     {

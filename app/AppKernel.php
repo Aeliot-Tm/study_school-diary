@@ -6,8 +6,8 @@
  * Time: 17.55
  */
 
+use Core\Security\Guardian;
 use Core\ServiceContainer;
-use Core\DB\Connection;
 use Core\HTTP\Exception\NotFoundException;
 use Core\HTTP\Request\Request;
 use Core\HTTP\Request\Route;
@@ -27,8 +27,6 @@ class AppKernel
     public function __construct()
     {
         $this->container = ServiceContainer::getInstance(include __DIR__.'/config/config.php');
-        $connection = $this->buildConnection();
-        $this->container->set(get_class($connection), $connection);
     }
 
     /**
@@ -40,17 +38,14 @@ class AppKernel
     {
         $this->loadRoutes();
         $route = $this->findRoute($request);
+        /** @var Guardian $guardian */
+        $guardian = $this->container->get(Guardian::class);
+        if ($response = $guardian->handle($route, $request)) {
+            return $response;
+        }
         $params = $this->buildActionParameters($route, $request);
 
         return call_user_func_array($this->getController($route), $params);
-    }
-
-    /**
-     * @return Connection
-     */
-    private function buildConnection(): Connection
-    {
-        return new Connection($this->container->getParameter('database'));
     }
 
     /**

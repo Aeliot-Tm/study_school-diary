@@ -48,12 +48,12 @@ class Session
      * @param string $name
      * @param mixed $default
      * @return mixed
-     * @throws \Exception
+     * @throws \LogicException
      */
-    public function get(string $name, $default)
+    public function get(string $name, $default = null)
     {
         if (!$this->hasStarted()) {
-            throw new \Exception('Session has not started yet');
+            throw new \LogicException('Session has not started yet');
         }
 
         return $_SESSION[$name] ?? $default;
@@ -79,12 +79,12 @@ class Session
     /**
      * @param string $name
      * @param mixed $value
-     * @throws \Exception
+     * @throws \LogicException
      */
     public function set(string $name, $value)
     {
         if (!$this->hasStarted()) {
-            throw new \Exception('Session has not started yet');
+            throw new \LogicException('Session has not started yet');
         }
 
         $_SESSION[$name] = $value;
@@ -92,13 +92,26 @@ class Session
 
     /**
      * @return bool
+     * @throws \Exception
      */
     public function start(): bool
     {
         if (!$this->hasStarted()) {
-            return session_start();
+            if (!session_start()) {
+                throw new \Exception('Session cannot be started');
+            }
+
+            return true;
         }
 
         return false;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function unset(string $name)
+    {
+        unset($_SESSION[$name]);
     }
 }

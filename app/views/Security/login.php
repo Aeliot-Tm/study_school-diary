@@ -11,7 +11,7 @@ $data = $form->getData();
     <?php include __DIR__.'/../Core/styles.html'; ?>
 </header>
 <body>
-<h1>Edit user</h1>
+<h1>Login</h1>
 <form action="/login" method="POST" class="user-form">
     <div class="form-group">
         <label for="login">Login</label>
@@ -24,7 +24,7 @@ $data = $form->getData();
                id="password" class="form-control">
     </div>
     <div class="form-group">
-        <button type="submit" name="save" class="btn btn-success">Save</button>
+        <button type="submit" name="save" class="btn btn-success">Login</button>
     </div>
 </form>
 </body>

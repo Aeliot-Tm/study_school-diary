@@ -8,8 +8,10 @@
 
 namespace Service;
 
+use Core\DB\Exception\ExecutionException;
+use Core\DB\Exception\NotUniqueException;
 use Core\HTTP\Session;
-use Exception\SecurityException;
+use Core\Security\PasswordHelper;
 use Model\UserModel;
 
 class SecurityService
@@ -20,25 +22,50 @@ class SecurityService
     private $model;
 
     /**
+     * @var PasswordHelper
+     */
+    private $passwordHelper;
+
+    /**
+     * @var Session
+     */
+    private $session;
+
+    /**
+     * @param Session $session
+     * @param PasswordHelper $passwordHelper
      * @param UserModel $model
      */
-    public function __construct(UserModel $model)
+    public function __construct(Session $session, PasswordHelper $passwordHelper, UserModel $model)
     {
         $this->model = $model;
+        $this->passwordHelper = $passwordHelper;
+        $this->session = $session;
     }
 
     /**
      * @param array $credentials
-     * @throws SecurityException
+     * @return bool
+     * @throws ExecutionException
+     * @throws NotUniqueException
+     * @throws \LogicException
      */
-    public function authorize(array $credentials)
+    public function authorize(array $credentials): bool
     {
         $user = $this->model->findByLogin($credentials['login']);
         if (!$user) {
-            throw new SecurityException('User not found');
+            return false;
         }
 
-        Session::getInstance()->set('user', $user);
+        $salt = $this->passwordHelper->getSalt($user['password']);
+        $securedPassword = $this->passwordHelper->getPassword($user['password']);
+        if ($this->passwordHelper->getHash($credentials['password'], $salt) !== $securedPassword) {
+            return false;
+        }
+
+        $this->session->set('user', $user);
+
+        return true;
     }
 
     /**
@@ -46,6 +73,28 @@ class SecurityService
      */
     public function isAuthorized(): bool
     {
-        return Session::getInstance()->isset('user');
+        return $this->session->isset('user');
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        if ($this->isAuthorized()) {
+            $user = $this->session->get('user', []);
+
+            return $user['roles'];
+        }
+
+        return [];
+    }
+
+    /**
+     * @return void
+     */
+    public function logout()
+    {
+        $this->session->unset('user');
     }
 }

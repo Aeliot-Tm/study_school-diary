@@ -11,6 +11,7 @@ return [
         'database' => require 'database.php',
         'views' => __DIR__.'/../views',
         'menu' => require 'menu.php',
+        'route_security' => require 'security.php',
     ],
     'services' => require 'services.php',
 ];

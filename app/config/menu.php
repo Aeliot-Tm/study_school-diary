@@ -14,4 +14,6 @@ return [
     ['url' => '/enrollments', 'title' => 'Enrollments', 'roles' => [Role::ADMIN]],
     //['url' => '/students', 'title' => 'Students', 'roles' => [Role::TEACHER]],
     //['url' => '/teachers', 'title' => 'Teachers', 'roles' => [Role::STUDENT]],
+    ['url' => '/login', 'title' => 'Login', 'roles' => []],
+    ['url' => '/logout', 'title' => 'Logout', 'roles' => [Role::ADMIN, Role::STUDENT, Role::TEACHER]],
 ];

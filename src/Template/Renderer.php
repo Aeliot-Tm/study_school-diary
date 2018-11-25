@@ -24,9 +24,9 @@ class Renderer
 
     /**
      * @param string $viewsDir
-     * @param MenuBuilder $menu
+     * @param Menu $menu
      */
-    public function __construct(string $viewsDir, MenuBuilder $menu)
+    public function __construct(string $viewsDir, Menu $menu)
     {
         $this->viewsDir = $viewsDir;
         $this->menu = $menu;
@@ -36,6 +36,7 @@ class Renderer
      * @param string $path
      * @param array $parameters
      * @return StreamInterface
+     * @throws \Exception
      */
     public function render(string $path, array $parameters): StreamInterface
     {

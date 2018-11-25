@@ -13,7 +13,7 @@ use Service\SecurityService;
 class MenuBuilder
 {
     /**
-     * @var MenuItem[]
+     * @var array
      */
     private $menu;
 
@@ -23,18 +23,48 @@ class MenuBuilder
     private $securityService;
 
     /**
-     * @param MenuItem[] $menu
+     * @var array
+     */
+    private $routeSecurity;
+
+    /**
+     * @param array $menu
+     * @param array $routeSecurity
      * @param SecurityService $securityService
      */
-    public function __construct(array $menu, SecurityService $securityService)
+    public function __construct(array $menu, array $routeSecurity, SecurityService $securityService)
     {
         $this->menu = $menu;
         $this->securityService = $securityService;
+        $this->routeSecurity = $routeSecurity;
     }
 
     public function getItems()
     {
-        //$roles =
-        return $this->menu;
+        $roles = $this->securityService->getRoles();
+        $items = [];
+        foreach ($this->menu as $item) {
+            $pathRoles = $this->getPathRoles($item['url']);
+            if ((!$pathRoles && !$roles) || array_intersect($pathRoles, $roles)) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param string $path
+     * @return array|null
+     */
+    private function getPathRoles(string $path)
+    {
+        foreach ($this->routeSecurity as $pattern => $routeRoles) {
+            if (preg_match(sprintf('#%s#', $pattern), $path)) {
+                return $routeRoles;
+            }
+        }
+
+        return [];
     }
 }

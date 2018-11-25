@@ -6,9 +6,10 @@
  * Time: 11:26
  */
 
+include __DIR__.'/../src/Core/Autoloader.php';
+
 use Core\Autoloader;
 
-include __DIR__.'/../src/Core/Autoloader.php';
 $autoloader = new Autoloader([__DIR__.'/../src', __DIR__]);
 
 spl_autoload_register([$autoloader, 'load']);

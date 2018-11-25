@@ -15,7 +15,7 @@ $data = $form->getData();
            id="plain_password" class="form-control">
 </div>
 <div class="form-group">
-    <label for="plain_password_confirm">Password</label>
+    <label for="plain_password_confirm">Password confirm</label>
     <input type="password" name="plain_password_confirm"
            value="<?php echo $data['plain_password_confirm'] ?? ''; ?>"
            id="plain_password_confirm" class="form-control">

@@ -9,7 +9,10 @@
 namespace Model;
 
 use Core\DB\Connection;
+use Core\DB\Exception\ExecutionException;
+use Core\DB\Exception\NotUniqueException;
 use Core\DB\Query;
+use Core\Security\PasswordHelper;
 use Core\Security\StringBuilder;
 
 class UserModel
@@ -22,12 +25,18 @@ class UserModel
     private $connection;
 
     /**
-     * User constructor.
-     * @param Connection $connection
+     * @var PasswordHelper
      */
-    public function __construct(Connection $connection)
+    private $passwordHelper;
+
+    /**
+     * @param Connection $connection
+     * @param PasswordHelper $passwordHelper
+     */
+    public function __construct(Connection $connection, PasswordHelper $passwordHelper)
     {
         $this->connection = $connection;
+        $this->passwordHelper = $passwordHelper;
     }
 
     /**
@@ -71,6 +80,7 @@ class UserModel
 
     /**
      * @param int $id
+     * @throws ExecutionException
      */
     public function delete(int $id)
     {
@@ -84,6 +94,8 @@ class UserModel
     /**
      * @param string $login
      * @return array|null
+     * @throws ExecutionException
+     * @throws NotUniqueException
      */
     public function findByLogin(string $login)
     {
@@ -103,7 +115,11 @@ class UserModel
     }
 
     /**
-     * @inheritdoc
+     * @param int $limit
+     * @param int $offset
+     * @param array $filter
+     * @return array
+     * @throws ExecutionException
      */
     public function getList(int $limit, int $offset, array $filter): array
     {
@@ -126,6 +142,7 @@ class UserModel
     /**
      * @param array $roles
      * @return array
+     * @throws ExecutionException
      */
     public function getNames(array $roles = []): array
     {
@@ -154,6 +171,8 @@ class UserModel
     /**
      * @param int $id
      * @return array|null
+     * @throws ExecutionException
+     * @throws NotUniqueException
      */
     public function getOne(int $id)
     {
@@ -212,14 +231,13 @@ class UserModel
     private function updatePassword(array $user): array
     {
         if (array_key_exists('plain_password', $user)) {
-            if ($user['password'] && strpos($user['password'], ':')) {
-                $parts = explode(':', $user['password']);
-                $salt = array_shift($parts);
+            if ($this->passwordHelper->hasSalt($user['password'])) {
+                $salt = $this->passwordHelper->getSalt($user['password']);
             } else {
                 $salt = StringBuilder::buildString(5);
             }
-            $hash = md5($salt.'|'.$user['plain_password']);
-            $user['password'] = sprintf('%s:%s', $salt, $hash);
+            $hash = $this->passwordHelper->getHash($user['plain_password'], $salt);
+            $user['password'] = $this->passwordHelper->getSecurityString($salt, $hash);
             unset($user['plain_password']);
         }
 
@@ -229,6 +247,7 @@ class UserModel
     /**
      * @param int $id
      * @param array $roles
+     * @throws ExecutionException
      */
     private function saveRoles(int $id, array $roles)
     {
@@ -262,6 +281,7 @@ class UserModel
     /**
      * @param int $id
      * @return array
+     * @throws ExecutionException
      */
     private function getUserRoles(int $id): array
     {

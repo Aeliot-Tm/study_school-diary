@@ -8,6 +8,8 @@
 
 namespace Controller;
 
+use Core\DB\Exception\ExecutionException;
+use Core\DB\Exception\NotUniqueException;
 use Core\HTTP\Exception\NotFoundException;
 use Core\HTTP\Request\Request;
 use Core\HTTP\Response\RedirectResponse;
@@ -90,7 +92,7 @@ class EnrollmentController
      * @param Request $request
      * @param int $id
      * @return RedirectResponse
-     * @throws \Core\DB\Exception\ExecutionException
+     * @throws ExecutionException
      */
     public function delete(Request $request, int $id)
     {
@@ -104,8 +106,9 @@ class EnrollmentController
      * @param int $id
      * @return RedirectResponse|Response
      * @throws NotFoundException
-     * @throws \Core\DB\Exception\ExecutionException
-     * @throws \Core\DB\Exception\NotUniqueException
+     * @throws ExecutionException
+     * @throws NotUniqueException
+     * @throws \Exception
      */
     public function edit(Request $request, int $id)
     {
@@ -136,7 +139,8 @@ class EnrollmentController
     /**
      * @param Request $request
      * @return Response
-     * @throws \Core\DB\Exception\ExecutionException
+     * @throws ExecutionException
+     * @throws \Exception
      */
     public function list(Request $request)
     {
@@ -152,8 +156,9 @@ class EnrollmentController
      * @param Request $request
      * @param int $id
      * @return Response
-     * @throws \Core\DB\Exception\ExecutionException
-     * @throws \Core\DB\Exception\NotUniqueException
+     * @throws ExecutionException
+     * @throws NotUniqueException
+     * @throws \Exception
      */
     public function view(Request $request, int $id)
     {
@@ -164,7 +169,7 @@ class EnrollmentController
 
     /**
      * @return array
-     * @throws \Core\DB\Exception\ExecutionException
+     * @throws ExecutionException
      */
     private function getSubjects(): array
     {
@@ -173,6 +178,7 @@ class EnrollmentController
 
     /**
      * @return array
+     * @throws ExecutionException
      */
     private function getUsers(): array
     {

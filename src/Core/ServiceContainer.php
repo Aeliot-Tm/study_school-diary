@@ -96,7 +96,9 @@ final class ServiceContainer
     {
         $config = $this->config['services'][$class] ?? [];
         foreach ($config as $index => $childKey) {
-            if ($this->isParameter($childKey)) {
+            if (is_callable($childKey)) {
+                $config[$index] = call_user_func($childKey);
+            } elseif ($this->isParameter($childKey)) {
                 $config[$index] = $this->getParameter(substr($childKey, 1, -1));
             } else {
                 $config[$index] = $this->get($childKey);

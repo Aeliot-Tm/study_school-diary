@@ -21,7 +21,8 @@
     },
     "require": {
         "php": "^7.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "phpmd/phpmd": "@stable",

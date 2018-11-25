@@ -32,3 +32,4 @@ Router::add('/enrollments/{id}/edit', [EnrollmentController::class, 'edit'], ['i
 Router::add('/enrollments/{id}/view', [EnrollmentController::class, 'view'], ['id' => '\\d+']);
 
 Router::add('/login', [\Controller\SecurityController::class, 'login']);
+Router::add('/logout', [\Controller\SecurityController::class, 'logout'], []);
