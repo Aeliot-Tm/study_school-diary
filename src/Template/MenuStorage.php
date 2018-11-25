@@ -9,6 +9,7 @@
 namespace Template;
 
 use Core\HTTP\Session;
+use Core\HTTP\SessionProvider;
 
 class MenuStorage
 {
@@ -18,11 +19,12 @@ class MenuStorage
     private $session;
 
     /**
-     * @param Session $session
+     * @param SessionProvider $sessionProvider
+     * @throws \Exception
      */
-    public function __construct(Session $session)
+    public function __construct(SessionProvider $sessionProvider)
     {
-        $this->session = $session;
+        $this->session = $sessionProvider();
     }
 
     /**

@@ -25,6 +25,7 @@ class Session
 
     /**
      * @return self
+     * @throws \Exception
      */
     public static function getInstance(): self
     {

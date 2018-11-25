@@ -11,6 +11,7 @@ namespace Service;
 use Core\DB\Exception\ExecutionException;
 use Core\DB\Exception\NotUniqueException;
 use Core\HTTP\Session;
+use Core\HTTP\SessionProvider;
 use Core\Security\PasswordHelper;
 use Model\UserModel;
 
@@ -32,15 +33,16 @@ class SecurityService
     private $session;
 
     /**
-     * @param Session $session
+     * @param SessionProvider $sessionProvider
      * @param PasswordHelper $passwordHelper
      * @param UserModel $model
+     * @throws \Exception
      */
-    public function __construct(Session $session, PasswordHelper $passwordHelper, UserModel $model)
+    public function __construct(SessionProvider $sessionProvider, PasswordHelper $passwordHelper, UserModel $model)
     {
         $this->model = $model;
         $this->passwordHelper = $passwordHelper;
-        $this->session = $session;
+        $this->session = $sessionProvider();
     }
 
     /**
