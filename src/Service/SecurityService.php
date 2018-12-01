@@ -59,9 +59,10 @@ class SecurityService
             return false;
         }
 
-        $salt = $this->passwordHelper->getSalt($user['password']);
-        $securedPassword = $this->passwordHelper->getPassword($user['password']);
-        if ($this->passwordHelper->getHash($credentials['password'], $salt) !== $securedPassword) {
+        $salt = $this->passwordHelper->getSaltPart($user['password']);
+        $hashPart = $this->passwordHelper->getHashPart($user['password']);
+        $hash = $this->passwordHelper->getHash($credentials['password'], $salt);
+        if ($hash !== $hashPart) {
             return false;
         }
 
@@ -75,7 +76,7 @@ class SecurityService
      */
     public function isAuthorized(): bool
     {
-        return $this->session->isset('user');
+        return $this->session->has('user');
     }
 
     /**
@@ -97,6 +98,6 @@ class SecurityService
      */
     public function logout()
     {
-        $this->session->unset('user');
+        $this->session->remove('user');
     }
 }

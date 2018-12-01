@@ -22,23 +22,23 @@ class PasswordHelper
     }
 
     /**
-     * @param string $securityString
+     * @param string $token
      * @return string
      */
-    public function getPassword(string $securityString): string
+    public function getHashPart(string $token): string
     {
-        $parts = explode(':', $securityString);
+        $parts = explode(':', $token);
 
         return array_pop($parts);
     }
 
     /**
-     * @param string $securityString
+     * @param string $token
      * @return string
      */
-    public function getSalt(string $securityString): string
+    public function getSaltPart(string $token): string
     {
-        $parts = explode(':', $securityString);
+        $parts = explode(':', $token);
 
         return array_shift($parts);
     }
@@ -48,17 +48,17 @@ class PasswordHelper
      * @param string $hash
      * @return string
      */
-    public function getSecurityString(string $salt, string $hash): string
+    public function createToken(string $salt, string $hash): string
     {
         return sprintf('%s:%s', $salt, $hash);
     }
 
     /**
-     * @param string $securityString
+     * @param string|null $token
      * @return bool
      */
-    public function hasSalt(string $securityString): bool
+    public function hasSalt($token): bool
     {
-        return $securityString && strpos($securityString, ':');
+        return $token && strpos($token, ':');
     }
 }

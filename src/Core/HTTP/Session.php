@@ -72,7 +72,7 @@ class Session
      * @param string $name
      * @return bool
      */
-    public function isset(string $name): bool
+    public function has(string $name): bool
     {
         return isset($_SESSION[$name]);
     }
@@ -111,7 +111,7 @@ class Session
     /**
      * @param string $name
      */
-    public function unset(string $name)
+    public function remove(string $name)
     {
         unset($_SESSION[$name]);
     }

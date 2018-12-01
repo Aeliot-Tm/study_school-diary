@@ -10,11 +10,12 @@ namespace Controller;
 
 use Core\DB\Exception\ExecutionException;
 use Core\DB\Exception\NotUniqueException;
+use Core\Form\FormFactory;
 use Core\HTTP\Exception\NotFoundException;
 use Core\HTTP\Request\Request;
 use Core\HTTP\Response\RedirectResponse;
 use Core\HTTP\Response\Response;
-use Form\UserForm;
+use Form\UserType;
 use Model\UserModel;
 use Template\Renderer;
 
@@ -31,13 +32,20 @@ class UserController
     private $renderer;
 
     /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * @param UserModel $model
+     * @param FormFactory $formFactory
      * @param Renderer $renderer
      */
-    public function __construct(UserModel $model, Renderer $renderer)
+    public function __construct(UserModel $model, FormFactory $formFactory, Renderer $renderer)
     {
         $this->model = $model;
         $this->renderer = $renderer;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -47,7 +55,7 @@ class UserController
      */
     public function create(Request $request)
     {
-        $form = new UserForm();
+        $form = $this->formFactory->build(UserType::class);
         if ($request->getMethod() === Request::METHOD_POST) {
             $form->parseRequest($request);
             if ($form->isValid()) {
@@ -88,7 +96,7 @@ class UserController
         if (!$user) {
             throw new NotFoundException();
         }
-        $form = new UserForm($user);
+        $form = $this->formFactory->build(UserType::class, $user);
         if ($request->getMethod() === Request::METHOD_POST) {
             $form->parseRequest($request);
             if ($form->isValid()) {

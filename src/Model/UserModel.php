@@ -231,13 +231,15 @@ class UserModel
     private function updatePassword(array $user): array
     {
         if (array_key_exists('plain_password', $user)) {
-            if ($this->passwordHelper->hasSalt($user['password'])) {
-                $salt = $this->passwordHelper->getSalt($user['password']);
-            } else {
-                $salt = StringBuilder::buildString(5);
+            if ($user['plain_password']) {
+                if ($this->passwordHelper->hasSalt($user['password'])) {
+                    $salt = $this->passwordHelper->getSaltPart($user['password']);
+                } else {
+                    $salt = StringBuilder::buildString(5);
+                }
+                $hash = $this->passwordHelper->getHash($user['plain_password'], $salt);
+                $user['password'] = $this->passwordHelper->createToken($salt, $hash);
             }
-            $hash = $this->passwordHelper->getHash($user['plain_password'], $salt);
-            $user['password'] = $this->passwordHelper->getSecurityString($salt, $hash);
             unset($user['plain_password']);
         }
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \Form\UserForm $form
+ * @var \Core\Form\Form $form
  */
 $data = $form->getData();
 ?>
@@ -12,17 +12,17 @@ $data = $form->getData();
 </header>
 <body>
 <h1>Login</h1>
+<div class="errors-bl">
+    <?php foreach ($form->getErrors() as $error) { ?>
+        <div class="error-message"><?php echo $error; ?></div>
+    <?php } ?>
+</div>
 <form action="/login" method="POST" class="user-form">
-    <div class="form-group">
-        <label for="login">Login</label>
-        <input type="text" name="login" value="<?php echo $data['login'] ?>" id="login" class="form-control">
-    </div>
-    <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" name="password"
-               value="<?php echo $data['password']; ?>"
-               id="password" class="form-control">
-    </div>
+    <?php foreach ($form->getFields() as $field) { ?>
+        <div class="form-group">
+            <?php echo $field; ?>
+        </div>
+    <?php } ?>
     <div class="form-group">
         <button type="submit" name="save" class="btn btn-success">Login</button>
     </div>

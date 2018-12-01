@@ -10,10 +10,11 @@ namespace Controller;
 
 use Core\DB\Exception\ExecutionException;
 use Core\DB\Exception\NotUniqueException;
+use Core\Form\FormFactory;
 use Core\HTTP\Request\Request;
 use Core\HTTP\Response\RedirectResponse;
 use Core\HTTP\Response\Response;
-use Form\LoginForm;
+use Form\LoginType;
 use Service\SecurityService;
 use Template\Menu;
 use Template\Renderer;
@@ -36,15 +37,26 @@ class SecurityController
     private $menu;
 
     /**
-     * @param SecurityService $securityService
-     * @param Renderer $renderer
-     * @param Menu $menu
+     * @var FormFactory
      */
-    public function __construct(SecurityService $securityService, Menu $menu, Renderer $renderer)
-    {
+    private $formFactory;
+
+    /**
+     * @param SecurityService $securityService
+     * @param FormFactory $formFactory
+     * @param Menu $menu
+     * @param Renderer $renderer
+     */
+    public function __construct(
+        SecurityService $securityService,
+        FormFactory $formFactory,
+        Menu $menu,
+        Renderer $renderer
+    ) {
         $this->renderer = $renderer;
         $this->securityService = $securityService;
         $this->menu = $menu;
+        $this->formFactory = $formFactory;
     }
 
     /**
@@ -56,7 +68,7 @@ class SecurityController
      */
     public function login(Request $request)
     {
-        $form = new LoginForm();
+        $form = $this->formFactory->build(LoginType::class);
         if ($request->getMethod() === Request::METHOD_POST) {
             $form->parseRequest($request);
             if ($form->isValid()) {
@@ -64,9 +76,8 @@ class SecurityController
                     $this->menu->invalidate();
 
                     return new RedirectResponse('/');
-                } else {
-                    //TODO add message
                 }
+                //TODO add message on fail
             }
         }
 

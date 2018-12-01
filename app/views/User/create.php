@@ -13,8 +13,21 @@ $data = $form->getData();
 </header>
 <body>
 <h1>Create user</h1>
+<div class="errors-bl">
+    <?php foreach ($form->getErrors() as $error) { ?>
+        <div class="error-message"><?php echo $error; ?></div>
+    <?php } ?>
+</div>
 <form action="/users/create" method="POST" class="user-form">
-    <?php include 'form_fields.php'; ?>
+    <?php foreach ($form->getFields() as $field) { ?>
+        <div class="form-group">
+            <?php echo $field; ?>
+        </div>
+    <?php } ?>
+    <div class="form-group">
+        <button type="submit" name="save" class="btn btn-success">Save</button>
+        <a href="/users" class="btn btn-default">Cancel</a>
+    </div>
 </form>
 </body>
 </html>

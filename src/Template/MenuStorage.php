@@ -40,7 +40,7 @@ class MenuStorage
      */
     public function hasItems(): bool
     {
-        return $this->session->isset('menu');
+        return $this->session->has('menu');
     }
 
     /**
@@ -56,6 +56,6 @@ class MenuStorage
      */
     public function removeItems()
     {
-        $this->session->unset('menu');
+        $this->session->remove('menu');
     }
 }
